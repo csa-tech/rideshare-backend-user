@@ -54,10 +54,6 @@ InputPersonal = function(req, res, next){
                                                                           if(err){throw err;}
                                                                             res.status(200).send('Success added name: ' + $.name + '\n');
                                                                           });
-      // else if(!req.data.carType) res.status(400).send("carType not exists");
-      // else if(!req.data.carLicense) res.status(400).send("carLicense not exists");
-      // else if(!req.data.carColor) res.status(400).send("carColor not exists");
-      // else if(!req.data.user_ID) res.status(400).send("user_ID not exists");
       
       if (err) {throw err;}
       // how to get information from response
