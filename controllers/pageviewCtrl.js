@@ -18,18 +18,9 @@ connection.connect(function(err) {
 });
 
 Getpersonal = function (req, res, next) { 
-  // Check entries in query
-  // if(!req.query.name) {
-  //   res.status(400).send("name not exists");
-  //   return;
-  // }
-  // if(!req.query.contact) {
-  //   res.status(400).send("contact not exists");
-  //   return;
-  // }
 
   try {
-    connection.query('SELECT * FROM rideshare.user_info WHERE user_id = ?', 
+    connection.query('SELECT * FROM rideshare.user WHERE user_id = ?', 
       [req.query.user_ID],
       function(err, rows, fields) { //这里写SQL query
 
@@ -44,16 +35,19 @@ Getpersonal = function (req, res, next) {
 
 InputPersonal = function(req, res, next){
   try{
+
+    console.log(req.body.name + " " + req.body.contact + " " + req.body.avatar_url);
+
     var input = req.query;
     var string = input.user_ID;
   
-    // if missing contact and name
-    if(!req.body.name && !req.body.contact) {
-      res.status(400).send("both not exists");
+    // if missing contact and name and avatar_url
+    if(!req.body.name && !req.body.contact && !req.body.avatar_url) {
+      res.status(400).send("all do not exists");
     }
     // if have contact only, update contact
-    else if(req.body.contact && !req.body.name) {
-      connection.query('UPDATE rideshare.user_info SET contact = ? WHERE user_id = ?', 
+    else if(req.body.contact && !req.body.name && !req.body.avatar_url) {
+      connection.query('UPDATE rideshare.user SET contact = ? WHERE user_id = ?', 
         [req.body.contact, string],
         function(err, rows, fields) {
           if(err){throw err;}
@@ -61,21 +55,39 @@ InputPersonal = function(req, res, next){
         });
     }
     // if have name only, update name
-    else if(req.body.name && !req.body.contact) {
-      connection.query('UPDATE rideshare.user_info SET name = ? WHERE user_id = ?',
+    else if(req.body.name && !req.body.contact && !req.body.avatar_url) {
+      connection.query('UPDATE rideshare.user SET name = ? WHERE user_id = ?',
         [req.body.name, string],
         function(err, rows, fields) {
           if(err){throw err;}
           res.status(200).send('Success added name: ' + req.body.name + '\n');
         });
     }
-    // update both
-    else {
-      connection.query('UPDATE rideshare.user_info SET name = ?, contact = ? WHERE user_id = ?',
-        [req.body.name, req.body.contact, string],
+    // if have avatar_url only
+    else if(req.body.avatar_url && !req.body.name && !req.body.contact) {
+      connection.query('UPDATE rideshare.user SET avatar_url = ? WHERE user_id = ?',
+        [req.body.avatar_url, string],
         function(err, rows, fields) {
-        if(err){throw err;}
-        res.status(200).send('Success added name: ' + req.body.name + '\n' +
+          if(err){throw err;}
+          res.status(200).send('Success added name: ' + req.body.name + '\n');
+        });
+    }
+    // update only name and contact 
+    else if(req.body.name && req.body.contact && !req.body.avatar_url){
+        connection.query('UPDATE rideshare.user SET name = ?, contact = ? WHERE user_id = ?',
+        [req.body.name, req.body.contact, string],
+        function(err, rows, fields){
+          if(err) throw err;
+          res.status(200).send('Success added name: ' + req.body.name + 
+            '\n Sucess added contact: ' + req.body.contact);
+        })
+    }
+    // update all
+    else {
+      connection.query('UPDATE rideshare.user SET name = ?, contact = ? WHERE user_id = ?',
+        [req.body.name, req.body.contact, req.body.avatar_url, string],
+        function(err, rows, fields) { if(err){throw err;}
+          res.status(200).send('Success added name: ' + req.body.name + '\n' +
                             'Success added contact: ' + req.body.contact + '\n');
       });
     }

@@ -10,6 +10,7 @@ var createError = require('http-errors');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var pageview = require('./routes/pageview');
+var Personal = require('./routes/Personal')
 
 var app = express();
 var upload = multer({dast: 'upload/' });
@@ -24,7 +25,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/user', Personal);
 app.use('/users', usersRouter);
-app.use('/Personal', pageview);
+
 
 module.exports = app;
