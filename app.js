@@ -8,9 +8,9 @@ var createError = require('http-errors');
 
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var updateUser = require('./routes/updateUser');
 var pageview = require('./routes/pageview');
-var Personal = require('./routes/Personal')
+var viewUser = require('./routes/viewUser');
 
 var app = express();
 var upload = multer({dast: 'upload/' });
@@ -25,8 +25,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/user', Personal);
-app.use('/users', usersRouter);
-
+app.use('/view-user', viewUser);
+app.use('/update-user', updateUser);
 
 module.exports = app;
